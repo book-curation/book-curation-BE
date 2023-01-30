@@ -12,6 +12,6 @@ export class Phrase {
   @Column()
   content: string;
 
-  @ManyToOne(() => Book, (book) => book.ISBN)
+  @ManyToOne(() => Book, (book) => book.id)
   bookId: Book;
 }
