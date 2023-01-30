@@ -1,11 +1,20 @@
 import internal from "stream";
-import { Column, Entity, OneToMany, PrimaryColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 import { Hashtag } from "./hashtag.entity";
 import { Phrase } from "./phrase.entity";
 
 @Entity()
 export class Book {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  id: Number;
+
+  @Column()
   ISBN: string;
 
   @Column()
