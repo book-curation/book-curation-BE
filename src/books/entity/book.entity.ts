@@ -15,7 +15,7 @@ export class Book {
   id: Number;
 
   @Column()
-  ISBN: string;
+  isbn: string;
 
   @Column()
   title: string;
@@ -25,15 +25,6 @@ export class Book {
 
   @Column()
   publisher: string;
-
-  @Column()
-  publicationDate: Date;
-
-  @Column()
-  language: string;
-
-  @Column()
-  numberOfPages: number;
 
   @Column()
   author: string;
