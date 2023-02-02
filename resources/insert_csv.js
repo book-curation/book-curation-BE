@@ -4,7 +4,9 @@ const fastcsv = require("fast-csv");
 require("dotenv").config();
 console.log(require("dotenv").config());
 
-let stream = fs.createReadStream("test.csv");
+const filePath = "daejeon-sample-202212.csv";
+
+let stream = fs.createReadStream(filePath);
 let csvData = [];
 let csvStream = fastcsv
   .parse()
