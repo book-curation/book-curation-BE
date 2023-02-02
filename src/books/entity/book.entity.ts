@@ -31,7 +31,4 @@ export class Book {
 
   @OneToMany(() => Phrase, (phrase) => phrase.bookId)
   phrases: Phrase[];
-
-  @OneToMany(() => Hashtag, (hashtag) => hashtag.bookId)
-  hashtags: Hashtag[];
 }
