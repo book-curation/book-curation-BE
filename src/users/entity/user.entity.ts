@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Phrase } from "src/books/entity/phrase.entity";
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 export enum AccountStatus {
   ACTIVE = "active",
@@ -25,4 +26,7 @@ export class User {
 
   @Column()
   registerDate: Date;
+
+  @OneToOne(() => Phrase, (phrase) => phrase.user)
+  phrase: Phrase;
 }
