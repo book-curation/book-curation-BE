@@ -1,20 +1,21 @@
 import { User } from "src/users/entity/user.entity";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Book } from "./book.entity";
 
 @Entity()
 export class Phrase {
-  @PrimaryColumn()
-  phraseId: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   content: string;
 
-  @OneToOne(() => Book, (book) => book.phrase)
-  @JoinColumn()
+  @Column({type: "timestamptz"})
+  createAt: Date
+
+  @ManyToOne(() => Book, (book) => book.phrases)
   book: Book;
 
-  @OneToOne(() => User, (user) => user.phrase)
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.phrases)
   user: User;
 }

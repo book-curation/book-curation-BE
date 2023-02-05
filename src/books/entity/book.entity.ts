@@ -1,19 +1,15 @@
-import internal from "stream";
 import {
   Column,
   Entity,
   OneToMany,
-  OneToOne,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { Hashtag } from "./hashtag.entity";
 import { Phrase } from "./phrase.entity";
 
 @Entity()
 export class Book {
   @PrimaryGeneratedColumn()
-  id: Number;
+  id: number;
 
   @Column()
   isbn: string;
@@ -30,6 +26,6 @@ export class Book {
   @Column()
   author: string;
 
-  @OneToOne(() => Phrase, (phrase) => phrase.book)
-  phrase: Phrase;
+  @OneToMany(() => Phrase, (phrase) => phrase.book)
+  phrases: Phrase[];
 }

@@ -4,18 +4,14 @@ import {
   Entity,
   JoinTable,
   ManyToMany,
-  ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from "typeorm";
 import { Book } from "./book.entity";
 
 @Entity()
 export class Hashtag {
-  @PrimaryColumn()
-  hashtagId: string;
-
-  @Column()
-  userId: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column()
   content: string;
