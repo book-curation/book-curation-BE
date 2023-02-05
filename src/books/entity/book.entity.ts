@@ -3,6 +3,7 @@ import {
   Column,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryColumn,
   PrimaryGeneratedColumn,
 } from "typeorm";
@@ -29,9 +30,6 @@ export class Book {
   @Column()
   author: string;
 
-  @OneToMany(() => Phrase, (phrase) => phrase.bookId)
-  phrases: Phrase[];
-
-  @OneToMany(() => Hashtag, (hashtag) => hashtag.bookId)
-  hashtags: Hashtag[];
+  @OneToOne(() => Phrase, (phrase) => phrase.book)
+  phrase: Phrase;
 }

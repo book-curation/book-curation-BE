@@ -1,4 +1,5 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
+import { User } from "src/users/entity/user.entity";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from "typeorm";
 import { Book } from "./book.entity";
 
 @Entity()
@@ -6,12 +7,14 @@ export class Phrase {
   @PrimaryColumn()
   phraseId: string;
 
-  @Column() // need to be updated as a foreign Key for User Id
-  userId: string;
-
   @Column()
   content: string;
 
-  @ManyToOne(() => Book, (book) => book.id)
-  bookId: Book;
+  @OneToOne(() => Book, (book) => book.phrase)
+  @JoinColumn()
+  book: Book;
+
+  @OneToOne(() => User, (user) => user.phrase)
+  @JoinColumn()
+  user: User;
 }
