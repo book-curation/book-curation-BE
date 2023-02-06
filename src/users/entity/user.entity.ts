@@ -1,6 +1,6 @@
 import { Phrase } from "src/books/entity/phrase.entity";
 import { Curation } from "src/curations/entity/curation.entity";
-import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 export enum AccountStatus {
   ACTIVE = "active",
@@ -25,7 +25,7 @@ export class User {
   @Column()
   status: AccountStatus;
 
-  @Column({type: "timestamptz"})
+  @CreateDateColumn()
   registerAt: Date;
 
   @OneToMany(() => Phrase, (phrase) => phrase.user)
