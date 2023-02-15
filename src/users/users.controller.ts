@@ -2,15 +2,12 @@ import {
   Body,
   Controller,
   Post,
-  Res,
-  HttpStatus,
   Get,
   Param,
   Patch,
   Delete,
 } from "@nestjs/common";
 import { CreateUserDto } from "./dto/create-user.dto";
-import { Response } from "express";
 import { UsersService } from "./users.service";
 import { ResetPasswordDto } from "./dto/reset-password.dto";
 import { LoginDto } from "./dto/login.dto";
@@ -20,53 +17,30 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post("login")
-  async login(@Body() loginDto: LoginDto, @Res() res: Response) {
-    await this.usersService.checkPassword(loginDto.userId, loginDto.password);
-    return res
-      .status(HttpStatus.OK)
-      .send({ message: "User successfully login" });
+  login(@Body() loginDto: LoginDto) {
+    return this.usersService.checkPassword(loginDto.userId, loginDto.password);
   }
 
   @Post()
-  async create(@Body() createUserDto: CreateUserDto, @Res() res: Response) {
-    await this.usersService.create(createUserDto);
-
-    return res
-      .status(HttpStatus.CREATED)
-      .send({ message: "User successfully created." });
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
   }
 
   @Get(":id")
-  async getUser(@Param("id") id: string, @Res() res: Response) {
-    const user = await this.usersService.findById(id);
-    const data = {
-      id: user.userId,
-      name: user.name,
-      status: user.status,
-      registerAt: user.registerAt,
-    };
-    return res
-      .status(HttpStatus.OK)
-      .send({ message: "User information successfully provided", data });
+  getUser(@Param("id") id: string) {
+    return this.usersService.findById(id);
   }
 
   @Patch(":id")
-  async resetPassword(
+  resetPassword(
     @Param("id") id: string,
-    @Body() resetPasswordDto: ResetPasswordDto,
-    @Res() res: Response
+    @Body() resetPasswordDto: ResetPasswordDto
   ) {
-    await this.usersService.resetPassword(id, resetPasswordDto);
-    return res
-      .status(HttpStatus.OK)
-      .send({ message: "Password successfully reset" });
+    return this.usersService.resetPassword(id, resetPasswordDto);
   }
 
   @Delete()
-  async delete(@Body() loginDto: LoginDto, @Res() res: Response) {
-    await this.usersService.delete(loginDto.userId, loginDto.password);
-    return res
-      .status(HttpStatus.OK)
-      .send({ message: "User successfully deleted" });
+  delete(@Body() loginDto: LoginDto) {
+    return this.usersService.delete(loginDto.userId, loginDto.password);
   }
 }
