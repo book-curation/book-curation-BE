@@ -1,20 +1,14 @@
-import { Res } from "@nestjs/common";
-import { HttpStatus } from "@nestjs/common/enums";
 import { Test, TestingModule } from "@nestjs/testing";
-import { Response } from "express";
 import { UsersController } from "./users.controller";
 import { UsersService } from "./users.service";
 
 describe("UsersController", () => {
   let controller: UsersController;
 
-  let res: Response = {
-    status: HttpStatus.OK,
-    send:
-  }
-
   const mockUsersService = {
-    create: jest.fn((dto) => dto),
+    create: jest.fn((dto) => {
+      return { id: Date.now(), ...dto };
+    }),
   };
 
   beforeEach(async () => {
@@ -33,15 +27,12 @@ describe("UsersController", () => {
     expect(controller).toBeDefined();
   });
 
+  const dto = {
+    userId: "test@test.com",
+    password: "test123",
+    name: "test",
+  };
   it("should create a user", async () => {
-    const response = await controller.create(
-      {
-        userId: "test@test.com",
-        password: "test123",
-        name: "test",
-      },
-      res
-    );
-    
+    expect(controller.create(dto)).toEqual({ id: expect.any(Number), ...dto });
   });
 });
