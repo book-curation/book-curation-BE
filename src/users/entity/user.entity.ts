@@ -1,6 +1,13 @@
-import { Phrase } from "src/books/entity/phrase.entity";
-import { Curation } from "src/curations/entity/curation.entity";
-import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Phrase } from "../../books/entity/phrase.entity";
+import { Curation } from "../../curations/entity/curation.entity";
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from "typeorm";
 
 export enum AccountStatus {
   ACTIVE = "active",

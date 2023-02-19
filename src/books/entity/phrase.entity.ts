@@ -1,4 +1,4 @@
-import { User } from "src/users/entity/user.entity";
+import { User } from "../../users/entity/user.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Book } from "./book.entity";
 
@@ -10,8 +10,8 @@ export class Phrase {
   @Column()
   content: string;
 
-  @Column({type: "timestamptz"})
-  createAt: Date
+  @Column({ type: "timestamptz" })
+  createAt: Date;
 
   @ManyToOne(() => Book, (book) => book.phrases)
   book: Book;
