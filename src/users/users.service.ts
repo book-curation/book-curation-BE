@@ -54,6 +54,7 @@ export class UsersService {
 
   async checkPassword(userId: string, password: string): Promise<User> {
     const user = await this.findById(userId);
+    console.log(password, user.password);
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
