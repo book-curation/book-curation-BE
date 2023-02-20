@@ -1,10 +1,5 @@
-import {
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { Phrase } from "./phrase.entity";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Phrase } from './phrase.entity';
 
 @Entity()
 export class Book {
@@ -26,6 +21,6 @@ export class Book {
   @Column()
   author: string;
 
-  @OneToMany(() => Phrase, (phrase) => phrase.book)
+  @OneToMany(() => Phrase, phrase => phrase.book)
   phrases: Phrase[];
 }

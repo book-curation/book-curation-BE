@@ -1,12 +1,6 @@
-import { User } from "../../users/entity/user.entity";
-import {
-  Column,
-  Entity,
-  JoinTable,
-  ManyToMany,
-  PrimaryGeneratedColumn,
-} from "typeorm";
-import { Book } from "./book.entity";
+import { User } from '../../users/entity/user.entity';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Book } from './book.entity';
 
 @Entity()
 export class Hashtag {
@@ -18,17 +12,17 @@ export class Hashtag {
 
   @ManyToMany(() => Book)
   @JoinTable({
-    name: "hashtag_book",
-    joinColumn: { name: "hashtagId" },
-    inverseJoinColumn: { name: "bookId" },
+    name: 'hashtag_book',
+    joinColumn: { name: 'hashtagId' },
+    inverseJoinColumn: { name: 'bookId' },
   })
   books: Book[];
 
   @ManyToMany(() => User)
   @JoinTable({
-    name: "hashtag_user",
-    joinColumn: { name: "hashtagId" },
-    inverseJoinColumn: { name: "userId" },
+    name: 'hashtag_user',
+    joinColumn: { name: 'hashtagId' },
+    inverseJoinColumn: { name: 'userId' },
   })
   users: User[];
 }

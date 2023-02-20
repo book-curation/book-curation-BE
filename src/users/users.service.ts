@@ -1,21 +1,16 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-  BadRequestException,
-} from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { DeleteResult, Repository } from "typeorm";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { AccountStatus, User } from "./entity/user.entity";
-import * as bcrypt from "bcrypt";
-import { ResetPasswordDto } from "./dto/reset-password.dto";
-import { LoginDto } from "./dto/login.dto";
+import { Injectable, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { DeleteResult, Repository } from 'typeorm';
+import { CreateUserDto } from './dto/create-user.dto';
+import { AccountStatus, User } from './entity/user.entity';
+import * as bcrypt from 'bcrypt';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<User> {
@@ -32,7 +27,7 @@ export class UsersService {
   async isIdExist(userId: string): Promise<boolean> {
     const user = await this.userRepository.findBy({ userId });
     if (user.length != 0) {
-      throw new ConflictException("User id already exist");
+      throw new ConflictException('User id already exist');
     }
     return true;
   }
@@ -40,7 +35,7 @@ export class UsersService {
   async findById(userId: string): Promise<User> {
     const user = await this.userRepository.findOneBy({ userId });
     if (!user) {
-      throw new NotFoundException("User does not exist");
+      throw new NotFoundException('User does not exist');
     }
     return user;
   }
@@ -57,21 +52,16 @@ export class UsersService {
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
-      throw new BadRequestException("Password does not match");
+      throw new BadRequestException('Password does not match');
     }
 
     return user;
   }
 
-  async resetPassword(
-    userId: string,
-    resetPasswordDto: ResetPasswordDto
-  ): Promise<User> {
+  async resetPassword(userId: string, resetPasswordDto: ResetPasswordDto): Promise<User> {
     const user = await this.checkPassword(userId, resetPasswordDto.password);
 
-    const newHashPassword = await this.hashPassword(
-      resetPasswordDto.newPassword
-    );
+    const newHashPassword = await this.hashPassword(resetPasswordDto.newPassword);
 
     user.password = newHashPassword;
 
