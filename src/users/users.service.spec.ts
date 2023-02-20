@@ -1,22 +1,18 @@
-import { ConflictException, NotFoundException } from "@nestjs/common";
+import {
+  BadRequestException,
+  ConflictException,
+  NotFoundException,
+} from "@nestjs/common";
 import { Test, TestingModule } from "@nestjs/testing";
 import { getRepositoryToken } from "@nestjs/typeorm";
 import { User } from "./entity/user.entity";
 import { UsersService } from "./users.service";
 import * as bcrypt from "bcrypt";
+import { ResetPasswordDto } from "./dto/reset-password.dto";
 
 describe("UsersService", () => {
   let service: UsersService;
-
-  const testUsers = [
-    {
-      id: Date.now(),
-      userId: "testId2",
-      password: "test123#",
-      name: "test",
-      status: "active",
-    },
-  ];
+  let testUsers = [];
 
   const mockUsersRepository = {
     findBy: jest
@@ -40,7 +36,12 @@ describe("UsersService", () => {
         status: "active",
       })
     ),
-    remove: jest.fn().mockImplementation(),
+    delete: jest.fn().mockImplementation((user) =>
+      Promise.resolve({
+        raw: [],
+        affected: 1,
+      })
+    ),
   };
 
   beforeEach(async () => {
@@ -55,6 +56,18 @@ describe("UsersService", () => {
     }).compile();
 
     service = module.get<UsersService>(UsersService);
+
+    testUsers = [
+      await service.create({
+        userId: "user@gmail.com",
+        password: "user123#",
+        name: "user",
+      }),
+    ];
+  });
+
+  afterEach(() => {
+    testUsers = [];
   });
 
   it("should be defined", () => {
@@ -64,8 +77,8 @@ describe("UsersService", () => {
   it("should create a new user record and return that", async () => {
     expect(
       await service.create({
-        userId: "testId",
-        password: "test123",
+        userId: "test@gmail.com",
+        password: "test123#",
         name: "test",
       })
     ).toEqual({
@@ -73,47 +86,65 @@ describe("UsersService", () => {
       name: "test",
       password: expect.any(String),
       status: "active",
-      userId: "testId",
+      userId: "test@gmail.com",
     });
   });
 
   it("should isIdExist True", async () => {
-    expect(await service.isIdExist("testId")).toEqual(true);
+    expect(await service.isIdExist("test@gmail.com")).toEqual(true);
   });
 
   it("should isIdExist returns exception", async () => {
-    await expect(service.isIdExist("testId2")).rejects.toThrow(
+    await expect(service.isIdExist("user@gmail.com")).rejects.toThrow(
       ConflictException
     );
   });
 
   it("should find user by id", async () => {
-    expect(await service.findById("testId2")).toEqual(testUsers[0]);
+    expect(await service.findById("user@gmail.com")).toEqual(testUsers[0]);
   });
 
   it("should not find user by id", async () => {
-    await expect(service.findById("testId")).rejects.toThrow(NotFoundException);
+    await expect(service.findById("test@gmail.com")).rejects.toThrow(
+      NotFoundException
+    );
   });
 
   it("should hash password", async () => {
-    const hashPassword = await service.hashPassword("test123#");
+    const hashPassword = await service.hashPassword("user123#");
 
-    expect(await bcrypt.compare("test123#", hashPassword)).toEqual(true);
+    expect(await bcrypt.compare("user123#", hashPassword)).toEqual(true);
   });
 
   it("should check password", async () => {
-    console.log(testUsers);
-    // const hashedPassword = await bcrypt.hash("test123#", 10);
-    // const testUsersTemp = {
-    //   name: "test",
-    //   id: Date.now(),
-    //   password: hashedPassword,
-    //   status: "active",
-    //   userId: "testId2",
-    // };
+    expect(await service.checkPassword("user@gmail.com", "user123#")).toEqual(
+      testUsers[0]
+    );
+  });
 
-    // expect(await service.checkPassword("testId2", "test123#")).toEqual(
-    //   testUsersTemp
-    // );
+  it("should check wrong password", async () => {
+    await expect(
+      service.checkPassword("user@gmail.com", "user123!")
+    ).rejects.toThrow(BadRequestException);
+  });
+
+  it("should reset password", async () => {
+    const resetPasswordDto: ResetPasswordDto = {
+      password: "user123#",
+      newPassword: "user123!",
+    };
+
+    const newPassword = (
+      await service.resetPassword("user@gmail.com", resetPasswordDto)
+    ).password;
+
+    expect(
+      await bcrypt.compare(resetPasswordDto.newPassword, newPassword)
+    ).toEqual(true);
+  });
+
+  it("should delete user information", async () => {
+    const deleteResult = await service.delete("user@gmail.com", "user123#");
+    expect(deleteResult.affected).toEqual(1);
   });
 });

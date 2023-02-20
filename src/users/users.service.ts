@@ -5,7 +5,7 @@ import {
   BadRequestException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { DeleteResult, Repository } from "typeorm";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { AccountStatus, User } from "./entity/user.entity";
 import * as bcrypt from "bcrypt";
@@ -54,7 +54,6 @@ export class UsersService {
 
   async checkPassword(userId: string, password: string): Promise<User> {
     const user = await this.findById(userId);
-    console.log(password, user.password);
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
@@ -79,9 +78,8 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async delete(userId: string, password: string) {
+  async delete(userId: string, password: string): Promise<DeleteResult> {
     const user = await this.checkPassword(userId, password);
-
-    return this.userRepository.remove(user);
+    return this.userRepository.delete(user.id);
   }
 }
