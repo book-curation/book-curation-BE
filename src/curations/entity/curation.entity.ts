@@ -1,13 +1,6 @@
-import { Book } from "../../books/entity/book.entity";
-import { User } from "../../users/entity/user.entity";
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-  ManyToMany,
-  JoinTable,
-} from "typeorm";
+import { Book } from '../../books/entity/book.entity';
+import { User } from '../../users/entity/user.entity';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity()
 export class Curation {
@@ -20,17 +13,17 @@ export class Curation {
   @Column()
   isPublic: boolean;
 
-  @Column({ type: "timestamptz" })
+  @Column({ type: 'timestamptz' })
   createAt: Date;
 
-  @ManyToOne(() => User, (user) => user.curations)
+  @ManyToOne(() => User, user => user.curations)
   user: User;
 
   @ManyToMany(() => Book)
   @JoinTable({
-    name: "curation_booklist",
-    joinColumn: { name: "curationId" },
-    inverseJoinColumn: { name: "bookId" },
+    name: 'curation_booklist',
+    joinColumn: { name: 'curationId' },
+    inverseJoinColumn: { name: 'bookId' },
   })
   books: Book[];
 }

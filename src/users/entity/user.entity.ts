@@ -1,23 +1,16 @@
-import { Phrase } from "../../books/entity/phrase.entity";
-import { Curation } from "../../curations/entity/curation.entity";
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  OneToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from "typeorm";
+import { Phrase } from '../../books/entity/phrase.entity';
+import { Curation } from '../../curations/entity/curation.entity';
+import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 export enum AccountStatus {
-  ACTIVE = "active",
-  INACTIVE = "inactive",
-  BLOCKED = "blocked",
+  ACTIVE = 'active',
+  INACTIVE = 'inactive',
+  BLOCKED = 'blocked',
 }
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column()
@@ -35,9 +28,9 @@ export class User {
   @CreateDateColumn()
   registerAt: Date;
 
-  @OneToMany(() => Phrase, (phrase) => phrase.user)
+  @OneToMany(() => Phrase, phrase => phrase.user)
   phrases: Phrase[];
 
-  @OneToMany(() => Curation, (curation) => curation.user)
+  @OneToMany(() => Curation, curation => curation.user)
   curations: Curation[];
 }

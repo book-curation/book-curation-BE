@@ -1,46 +1,34 @@
-import {
-  BadRequestException,
-  ConflictException,
-  NotFoundException,
-} from "@nestjs/common";
-import { Test, TestingModule } from "@nestjs/testing";
-import { getRepositoryToken } from "@nestjs/typeorm";
-import { User } from "./entity/user.entity";
-import { UsersService } from "./users.service";
-import * as bcrypt from "bcrypt";
-import { ResetPasswordDto } from "./dto/reset-password.dto";
+import { BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { User } from './entity/user.entity';
+import { UsersService } from './users.service';
+import * as bcrypt from 'bcrypt';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
-describe("UsersService", () => {
+describe('UsersService', () => {
   let service: UsersService;
   let testUsers = [];
 
   const mockUsersRepository = {
     findBy: jest
       .fn()
-      .mockImplementation((user) =>
-        Promise.resolve(
-          testUsers.filter((testUser) => testUser.userId === user.userId)
-        )
-      ),
+      .mockImplementation(user => Promise.resolve(testUsers.filter(testUser => testUser.userId === user.userId))),
     findOneBy: jest
       .fn()
-      .mockImplementation((user) =>
-        Promise.resolve(
-          testUsers.filter((testUser) => testUser.userId === user.userId)[0]
-        )
-      ),
-    save: jest.fn().mockImplementation((user) =>
+      .mockImplementation(user => Promise.resolve(testUsers.filter(testUser => testUser.userId === user.userId)[0])),
+    save: jest.fn().mockImplementation(user =>
       Promise.resolve({
         id: Date.now(),
         ...user,
-        status: "active",
-      })
+        status: 'active',
+      }),
     ),
-    delete: jest.fn().mockImplementation((user) =>
+    delete: jest.fn().mockImplementation(user =>
       Promise.resolve({
         raw: [],
         affected: 1,
-      })
+      }),
     ),
   };
 
@@ -59,9 +47,9 @@ describe("UsersService", () => {
 
     testUsers = [
       await service.create({
-        userId: "user@gmail.com",
-        password: "user123#",
-        name: "user",
+        userId: 'user@gmail.com',
+        password: 'user123#',
+        name: 'user',
       }),
     ];
   });
@@ -70,81 +58,69 @@ describe("UsersService", () => {
     testUsers = [];
   });
 
-  it("should be defined", () => {
+  it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  it("should create a new user record and return that", async () => {
+  it('should create a new user record and return that', async () => {
     expect(
       await service.create({
-        userId: "test@gmail.com",
-        password: "test123#",
-        name: "test",
-      })
+        userId: 'test@gmail.com',
+        password: 'test123#',
+        name: 'test',
+      }),
     ).toEqual({
       id: expect.any(Number),
-      name: "test",
+      name: 'test',
       password: expect.any(String),
-      status: "active",
-      userId: "test@gmail.com",
+      status: 'active',
+      userId: 'test@gmail.com',
     });
   });
 
-  it("should isIdExist True", async () => {
-    expect(await service.isIdExist("test@gmail.com")).toEqual(true);
+  it('should isIdExist True', async () => {
+    expect(await service.isIdExist('test@gmail.com')).toEqual(true);
   });
 
-  it("should isIdExist returns exception", async () => {
-    await expect(service.isIdExist("user@gmail.com")).rejects.toThrow(
-      ConflictException
-    );
+  it('should isIdExist returns exception', async () => {
+    await expect(service.isIdExist('user@gmail.com')).rejects.toThrow(ConflictException);
   });
 
-  it("should find user by id", async () => {
-    expect(await service.findById("user@gmail.com")).toEqual(testUsers[0]);
+  it('should find user by id', async () => {
+    expect(await service.findById('user@gmail.com')).toEqual(testUsers[0]);
   });
 
-  it("should not find user by id", async () => {
-    await expect(service.findById("test@gmail.com")).rejects.toThrow(
-      NotFoundException
-    );
+  it('should not find user by id', async () => {
+    await expect(service.findById('test@gmail.com')).rejects.toThrow(NotFoundException);
   });
 
-  it("should hash password", async () => {
-    const hashPassword = await service.hashPassword("user123#");
+  it('should hash password', async () => {
+    const hashPassword = await service.hashPassword('user123#');
 
-    expect(await bcrypt.compare("user123#", hashPassword)).toEqual(true);
+    expect(await bcrypt.compare('user123#', hashPassword)).toEqual(true);
   });
 
-  it("should check password", async () => {
-    expect(await service.checkPassword("user@gmail.com", "user123#")).toEqual(
-      testUsers[0]
-    );
+  it('should check password', async () => {
+    expect(await service.checkPassword('user@gmail.com', 'user123#')).toEqual(testUsers[0]);
   });
 
-  it("should check wrong password", async () => {
-    await expect(
-      service.checkPassword("user@gmail.com", "user123!")
-    ).rejects.toThrow(BadRequestException);
+  it('should check wrong password', async () => {
+    await expect(service.checkPassword('user@gmail.com', 'user123!')).rejects.toThrow(BadRequestException);
   });
 
-  it("should reset password", async () => {
+  it('should reset password', async () => {
     const resetPasswordDto: ResetPasswordDto = {
-      password: "user123#",
-      newPassword: "user123!",
+      password: 'user123#',
+      newPassword: 'user123!',
     };
 
-    const newPassword = (
-      await service.resetPassword("user@gmail.com", resetPasswordDto)
-    ).password;
+    const newPassword = (await service.resetPassword('user@gmail.com', resetPasswordDto)).password;
 
-    expect(
-      await bcrypt.compare(resetPasswordDto.newPassword, newPassword)
-    ).toEqual(true);
+    expect(await bcrypt.compare(resetPasswordDto.newPassword, newPassword)).toEqual(true);
   });
 
-  it("should delete user information", async () => {
-    const deleteResult = await service.delete("user@gmail.com", "user123#");
+  it('should delete user information', async () => {
+    const deleteResult = await service.delete('user@gmail.com', 'user123#');
     expect(deleteResult.affected).toEqual(1);
   });
 });

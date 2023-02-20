@@ -1,27 +1,27 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { CreateUserDto } from "./dto/create-user.dto";
-import { LoginDto } from "./dto/login.dto";
-import { ResetPasswordDto } from "./dto/reset-password.dto";
-import { UsersController } from "./users.controller";
-import { UsersService } from "./users.service";
+import { Test, TestingModule } from '@nestjs/testing';
+import { CreateUserDto } from './dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { UsersController } from './users.controller';
+import { UsersService } from './users.service';
 
-describe("UsersController", () => {
+describe('UsersController', () => {
   let controller: UsersController;
 
   const id: number = Date.now();
-  const userId: string = "test@test.com";
-  const password: string = "test123";
-  const name: string = "test";
-  const newPassword: string = "test1234";
+  const userId = 'test@test.com';
+  const password = 'test123';
+  const name = 'test';
+  const newPassword = 'test1234';
 
   const mockUsersService = {
-    create: jest.fn((dto) => {
+    create: jest.fn(dto => {
       return { id, ...dto };
     }),
     checkPassword: jest.fn((userId, password) => {
       return { id, name, userId, password };
     }),
-    findById: jest.fn((userId) => {
+    findById: jest.fn(userId => {
       return { id, name, userId, password };
     }),
     resetPassword: jest.fn((userId, dto) => {
@@ -44,11 +44,11 @@ describe("UsersController", () => {
     controller = module.get<UsersController>(UsersController);
   });
 
-  it("should be defined", () => {
+  it('should be defined', () => {
     expect(controller).toBeDefined();
   });
 
-  it("should make the user to log in", () => {
+  it('should make the user to log in', () => {
     const loginDto: LoginDto = {
       userId,
       password,
@@ -61,7 +61,7 @@ describe("UsersController", () => {
     });
   });
 
-  it("should create a user", () => {
+  it('should create a user', () => {
     const createDto: CreateUserDto = {
       userId,
       password,
@@ -74,7 +74,7 @@ describe("UsersController", () => {
     });
   });
 
-  it("should bring in user information", () => {
+  it('should bring in user information', () => {
     expect(controller.getUser(userId)).toEqual({
       id: expect.any(Number),
       name: expect.any(String),
@@ -83,7 +83,7 @@ describe("UsersController", () => {
     });
   });
 
-  it("should reset the password", () => {
+  it('should reset the password', () => {
     const resetPasswordDto: ResetPasswordDto = {
       password,
       newPassword,
@@ -97,7 +97,7 @@ describe("UsersController", () => {
     });
   });
 
-  it("should delete the user", () => {
+  it('should delete the user', () => {
     const loginDto: LoginDto = {
       userId,
       password,
