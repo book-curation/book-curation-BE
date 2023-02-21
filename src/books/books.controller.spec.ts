@@ -9,7 +9,7 @@ describe('BooksController', () => {
     isbn: Date.now(),
     title: 'test book',
     subject: 'test number',
-    publisher: 'test piblisher',
+    publisher: 'test publisher',
     author: 'test author',
   };
 
@@ -52,7 +52,7 @@ describe('BooksController', () => {
     expect(bookList.length).toEqual(count);
   });
 
-  it('should get book informtaion by book id', () => {
+  it('should get book information by book id', () => {
     const id = 100;
     expect(controller.getBook(id)).toEqual({
       id,

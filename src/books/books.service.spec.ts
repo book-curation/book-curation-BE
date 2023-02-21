@@ -14,7 +14,7 @@ describe('BooksService', () => {
       isbn: Date.now(),
       title: `test book ${i}`,
       subject: `test number ${i}`,
-      publisher: `test piblisher ${i}`,
+      publisher: `test publisher ${i}`,
       author: `test author ${i}`,
     });
   }
