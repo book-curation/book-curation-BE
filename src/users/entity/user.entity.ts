@@ -1,4 +1,4 @@
-import { Phrase } from '../../books/entity/phrase.entity';
+import { Phrase } from '../../phrase/entity/phrase.entity';
 import { Curation } from '../../curations/entity/curation.entity';
 import { Column, CreateDateColumn, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
