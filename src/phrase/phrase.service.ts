@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { CreatePhraseDto } from './dto/create-phrase.dto';
 import { Phrase } from './entity/phrase.entity';
 import { BooksService } from '../books/books.service';
 import { UsersService } from '../users/users.service';
+import { UpdatePhraseDto } from './dto/update-phrase.dto';
+import { User } from '../users/entity/user.entity';
 
 @Injectable()
 export class PhraseService {
@@ -15,7 +17,7 @@ export class PhraseService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(createPhraseDto: CreatePhraseDto) {
+  async create(createPhraseDto: CreatePhraseDto): Promise<Phrase> {
     const book = await this.booksService.findById(createPhraseDto.bookId);
     const user = await this.usersService.findById(createPhraseDto.userId);
 
@@ -23,5 +25,52 @@ export class PhraseService {
     phrase.content = createPhraseDto.content;
     (phrase.book = book), (phrase.user = user);
     return this.phraseRepository.save(phrase);
+  }
+
+  async getPhrase(bookId: number): Promise<Phrase[]> {
+    const book = await this.booksService.findById(bookId);
+
+    return this.phraseRepository.findBy({ book });
+  }
+
+  async findById(phraseId: number): Promise<Phrase> {
+    const phrase = await this.phraseRepository.findOneBy({ id: phraseId });
+    if (!phrase) {
+      throw new NotFoundException('Phrase does not exist');
+    }
+    return phrase;
+  }
+
+  async checkUserId(userId: string, phraseUser: User): Promise<Boolean> {
+    if (userId !== phraseUser.userId) {
+      throw new ForbiddenException('User id does not match');
+    }
+    return true;
+  }
+
+  async update(phraseId: number, updatePhraseDto: UpdatePhraseDto): Promise<Phrase> {
+    const phrase = await this.findById(phraseId);
+    await this.checkUserId(updatePhraseDto.userId, phrase.user);
+    phrase.content = updatePhraseDto.content;
+    return this.phraseRepository.save(phrase);
+  }
+
+  async delete(phraseId: number, userId: string): Promise<DeleteResult> {
+    const phrase = await this.findById(phraseId);
+    await this.checkUserId(userId, phrase.user);
+
+    return this.phraseRepository.delete(phraseId);
+  }
+
+  async recommendPhrase(count: number = 3): Promise<Phrase[]> {
+    const phraseList = await this.phraseRepository
+      .createQueryBuilder('phrase')
+      .leftJoinAndSelect('phrase.book', 'book')
+      .select(['phrase.id', 'phrase.content', 'book.id'])
+      .orderBy('RANDOM()')
+      .limit(count)
+      .getMany();
+
+    return phraseList;
   }
 }

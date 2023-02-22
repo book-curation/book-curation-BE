@@ -26,5 +26,4 @@ export class Curation {
     inverseJoinColumn: { name: 'bookId' },
   })
   books: Book[];
-  ph;
 }
