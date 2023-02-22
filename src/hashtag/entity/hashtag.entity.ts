@@ -1,6 +1,6 @@
 import { User } from '../../users/entity/user.entity';
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Book } from './book.entity';
+import { Book } from '../../books/entity/book.entity';
 
 @Entity()
 export class Hashtag {
