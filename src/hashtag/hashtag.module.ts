@@ -5,9 +5,11 @@ import { HashtagController } from './hashtag.controller';
 import { HashtagService } from './hashtag.service';
 import { UsersModule } from '../users/users.module';
 import { Hashtag } from './entity/hashtag.entity';
+import { Book } from '../books/entity/book.entity';
+import { User } from '../users/entity/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Hashtag]), BooksModule, UsersModule],
+  imports: [TypeOrmModule.forFeature([Hashtag, Book, User]), BooksModule, UsersModule],
   controllers: [HashtagController],
   providers: [HashtagService],
 })

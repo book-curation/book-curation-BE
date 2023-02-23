@@ -1,4 +1,5 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Hashtag } from '../../hashtag/entity/hashtag.entity';
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Phrase } from '../../phrase/entity/phrase.entity';
 
 @Entity()
@@ -23,4 +24,7 @@ export class Book {
 
   @OneToMany(() => Phrase, phrase => phrase.book)
   phrases: Phrase[];
+
+  @ManyToMany(() => Hashtag, hashtag => hashtag.books)
+  hashtag: Hashtag[];
 }

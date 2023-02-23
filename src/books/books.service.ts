@@ -11,7 +11,12 @@ export class BooksService {
   ) {}
 
   async findById(id: number): Promise<Book> {
-    const book = await this.bookRepository.findOneBy({ id });
+    const book = await this.bookRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['hashtag'],
+    });
 
     if (!book) {
       throw new NotFoundException('Book does not exist');
