@@ -4,9 +4,10 @@ import { BooksModule } from './books/books.module';
 import { dataSoureOptions } from '../db/data-source';
 import { UsersModule } from './users/users.module';
 import { PhraseModule } from './phrase/phrase.module';
+import { HashtagModule } from './hashtag/hashtag.module';
 
 @Module({
-  imports: [TypeOrmModule.forRoot(dataSoureOptions), BooksModule, UsersModule, PhraseModule],
+  imports: [TypeOrmModule.forRoot(dataSoureOptions), BooksModule, UsersModule, PhraseModule, HashtagModule],
   controllers: [],
   providers: [],
 })
