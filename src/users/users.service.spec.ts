@@ -14,14 +14,26 @@ describe('UsersService', () => {
     findBy: jest
       .fn()
       .mockImplementation(user => Promise.resolve(testUsers.filter(testUser => testUser.userId === user.userId))),
-    findOneBy: jest
+    findOne: jest
       .fn()
-      .mockImplementation(user => Promise.resolve(testUsers.filter(testUser => testUser.userId === user.userId)[0])),
+      .mockImplementation(user =>
+        Promise.resolve(testUsers.filter(testUser => testUser.userId === user.where.userId)[0]),
+      ),
     save: jest.fn().mockImplementation(user =>
       Promise.resolve({
         id: Date.now(),
         ...user,
         status: 'active',
+        hashtag: [
+          {
+            id: 1,
+            content: 'test-hashtag1',
+          },
+          {
+            id: 2,
+            content: 'test-hashtag2',
+          },
+        ],
       }),
     ),
     delete: jest.fn().mockImplementation(user =>
@@ -75,6 +87,7 @@ describe('UsersService', () => {
       password: expect.any(String),
       status: 'active',
       userId: 'test@gmail.com',
+      hashtag: expect.any(Array),
     });
   });
 

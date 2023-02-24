@@ -77,4 +77,13 @@ export class UsersService {
     const user = await this.checkPassword(userId, password);
     return this.userRepository.delete(user.id);
   }
+
+  async deleteHashtag(hashtagId: number, userId: string) {
+    const user = await this.findById(userId);
+    user.hashtag = user.hashtag.filter(tag => {
+      return tag.id != hashtagId;
+    });
+
+    return this.userRepository.save(user);
+  }
 }

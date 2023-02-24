@@ -1,7 +1,7 @@
 import { forwardRef, Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { HashtagService } from '../hashtag/hashtag.service';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Book } from './entity/book.entity';
 import { Hashtag } from '../hashtag/entity/hashtag.entity';
 
@@ -10,9 +10,6 @@ export class BooksService {
   constructor(
     @InjectRepository(Book)
     private readonly bookRepository: Repository<Book>,
-
-    @InjectRepository(Hashtag)
-    private readonly hashtagRepository: Repository<Hashtag>,
 
     @Inject(forwardRef(() => HashtagService))
     private readonly hashtagService: HashtagService,
@@ -47,15 +44,10 @@ export class BooksService {
   async getBookByHashtagId(hashtagId: number): Promise<object[]> {
     await this.hashtagService.findById(hashtagId);
 
-    const result = await this.hashtagRepository.find({
-      where: {
-        id: hashtagId,
-      },
-      relations: ['books'],
-    });
+    const books = await this.hashtagService.findBookByHashtag(hashtagId);
 
     let bookList = [];
-    result[0].books.map(book =>
+    books.map(book =>
       bookList.push({
         id: book.id,
         title: book.title,
@@ -64,5 +56,16 @@ export class BooksService {
     );
 
     return bookList;
+  }
+
+  async findHashtagByBook(bookId: number): Promise<Hashtag[]> {
+    const result = await this.bookRepository.find({
+      where: {
+        id: bookId,
+      },
+      relations: ['hashtag'],
+    });
+
+    return result[0].hashtag;
   }
 }

@@ -1,11 +1,13 @@
-import { NotFoundException } from '@nestjs/common';
+import { forwardRef, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { HashtagService } from '../hashtag/hashtag.service';
 import { BooksService } from './books.service';
 import { Book } from './entity/book.entity';
 
 describe('BooksService', () => {
   let service: BooksService;
+  let hashtagService: HashtagService;
   let testBooks = [];
 
   for (let i = 1; i < 11; i++) {
@@ -20,9 +22,9 @@ describe('BooksService', () => {
   }
 
   const mockBookRepository = {
-    findOneBy: jest
+    findOne: jest
       .fn()
-      .mockImplementation(book => Promise.resolve(testBooks.filter(testBook => testBook.id == book.id)[0])),
+      .mockImplementation(book => Promise.resolve(testBooks.filter(testBook => testBook.id === book.where.id)[0])),
     createQueryBuilder: jest.fn().mockReturnValue({
       select: jest.fn().mockReturnThis(),
       orderBy: jest.fn().mockReturnThis(),
@@ -36,6 +38,12 @@ describe('BooksService', () => {
       providers: [
         BooksService,
         {
+          provide: HashtagService,
+          useFactory: () => {
+            forwardRef(() => HashtagService);
+          },
+        },
+        {
           provide: getRepositoryToken(Book),
           useValue: mockBookRepository,
         },
@@ -43,6 +51,7 @@ describe('BooksService', () => {
     }).compile();
 
     service = module.get<BooksService>(BooksService);
+    hashtagService = module.get<HashtagService>(HashtagService);
   });
 
   it('should be defined', () => {

@@ -6,7 +6,7 @@ import { BooksService } from '../books/books.service';
 import { UsersService } from '../users/users.service';
 import { Hashtag } from './entity/hashtag.entity';
 import { Book } from '../books/entity/book.entity';
-import { ForbiddenException, NotFoundException } from '@nestjs/common/exceptions';
+import { NotFoundException } from '@nestjs/common/exceptions';
 import { User } from '../users/entity/user.entity';
 
 @Injectable()
@@ -14,12 +14,6 @@ export class HashtagService {
   constructor(
     @InjectRepository(Hashtag)
     private readonly hashtagRepository: Repository<Hashtag>,
-
-    @InjectRepository(Book)
-    private readonly bookRepository: Repository<Book>,
-
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
 
     @Inject(forwardRef(() => BooksService))
     private readonly booksService: BooksService,
@@ -50,15 +44,10 @@ export class HashtagService {
   async getHashtagByBookId(bookId: number): Promise<string[]> {
     await this.booksService.findById(bookId);
 
-    const result = await this.bookRepository.find({
-      where: {
-        id: bookId,
-      },
-      relations: ['hashtag'],
-    });
+    const hashtags = await this.booksService.findHashtagByBook(bookId);
 
     let hashtagList = [];
-    result[0].hashtag.map(tag => hashtagList.push(tag.content));
+    hashtags.map(tag => hashtagList.push(tag.content));
 
     return hashtagList;
   }
@@ -79,12 +68,7 @@ export class HashtagService {
   async deleteHashtagByUser(hashtagId: number, userId: string): Promise<User> {
     await this.findById(hashtagId);
 
-    const user = await this.usersService.findById(userId);
-    user.hashtag = user.hashtag.filter(tag => {
-      return tag.id != hashtagId;
-    });
-
-    return this.userRepository.save(user);
+    return this.usersService.deleteHashtag(hashtagId, userId);
   }
 
   async delete(hashtagId: number): Promise<DeleteResult> {
@@ -96,5 +80,16 @@ export class HashtagService {
     }
 
     return deleteHashtag;
+  }
+
+  async findBookByHashtag(hashtagId: number): Promise<Book[]> {
+    const result = await this.hashtagRepository.find({
+      where: {
+        id: hashtagId,
+      },
+      relations: ['books'],
+    });
+
+    return result[0].books;
   }
 }
