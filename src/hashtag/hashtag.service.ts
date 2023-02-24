@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import { CreateHashtagDto } from './dto/create-hashtag.dto';
@@ -21,6 +21,7 @@ export class HashtagService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
 
+    @Inject(forwardRef(() => BooksService))
     private readonly booksService: BooksService,
     private readonly usersService: UsersService,
   ) {}
@@ -47,7 +48,7 @@ export class HashtagService {
   }
 
   async getHashtagByBookId(bookId: number): Promise<string[]> {
-    const book = await this.booksService.findById(bookId);
+    await this.booksService.findById(bookId);
 
     const result = await this.bookRepository.find({
       where: {

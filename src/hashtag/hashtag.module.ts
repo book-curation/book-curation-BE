@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BooksModule } from '../books/books.module';
 import { HashtagController } from './hashtag.controller';
@@ -9,8 +9,9 @@ import { Book } from '../books/entity/book.entity';
 import { User } from '../users/entity/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Hashtag, Book, User]), BooksModule, UsersModule],
+  imports: [TypeOrmModule.forFeature([Hashtag, Book, User]), forwardRef(() => BooksModule), UsersModule],
   controllers: [HashtagController],
   providers: [HashtagService],
+  exports: [HashtagService],
 })
 export class HashtagModule {}

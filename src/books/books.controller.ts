@@ -14,4 +14,9 @@ export class BooksController {
   getBook(@Param('id') id: number) {
     return this.booksService.findById(id);
   }
+
+  @Get()
+  getBookByHashtagId(@Query('hashtagId') hashtagId: number) {
+    return this.booksService.getBookByHashtagId(hashtagId);
+  }
 }
