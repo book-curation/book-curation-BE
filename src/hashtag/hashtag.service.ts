@@ -23,7 +23,6 @@ export class HashtagService {
   async create(createHashtagDto: CreateHashtagDto): Promise<string> {
     const book = await this.booksService.findById(createHashtagDto.bookId);
     const user = await this.usersService.findById(createHashtagDto.userId);
-
     await Promise.all(
       createHashtagDto.content.map(async content => {
         const existingHashtag = await this.hashtagRepository.findOneBy({ content });
@@ -32,7 +31,6 @@ export class HashtagService {
           hashtag.content = content;
           hashtag.books = [book];
           hashtag.users = [user];
-
           await this.hashtagRepository.save(hashtag);
         }
       }),
