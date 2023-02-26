@@ -6,7 +6,6 @@ import { Phrase } from './entity/phrase.entity';
 import { BooksService } from '../books/books.service';
 import { UsersService } from '../users/users.service';
 import { UpdatePhraseDto } from './dto/update-phrase.dto';
-import { User } from '../users/entity/user.entity';
 
 @Injectable()
 export class PhraseService {
@@ -41,23 +40,21 @@ export class PhraseService {
     return phrase;
   }
 
-  async checkUserId(userId: string, phraseUser: User): Promise<Boolean> {
-    if (userId !== phraseUser.userId) {
-      throw new ForbiddenException('User id does not match');
-    }
-    return true;
-  }
-
   async update(phraseId: number, updatePhraseDto: UpdatePhraseDto): Promise<Phrase> {
     const phrase = await this.findById(phraseId);
-    await this.checkUserId(updatePhraseDto.userId, phrase.user);
+    if (updatePhraseDto.userId !== phrase.user.userId) {
+      throw new ForbiddenException('User id does not match');
+    }
+
     phrase.content = updatePhraseDto.content;
     return this.phraseRepository.save(phrase);
   }
 
   async delete(phraseId: number, userId: string): Promise<DeleteResult> {
     const phrase = await this.findById(phraseId);
-    await this.checkUserId(userId, phrase.user);
+    if (userId !== phrase.user.userId) {
+      throw new ForbiddenException('User id does not match');
+    }
 
     return this.phraseRepository.delete(phraseId);
   }

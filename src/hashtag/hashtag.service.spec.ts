@@ -72,8 +72,8 @@ describe('HashtagService', () => {
   const mockHashtagRepository = {
     findOne: jest
       .fn()
-      .mockImplementation(hasthag =>
-        Promise.resolve(testHashtags.filter(testHashtag => testHashtag.id === hasthag.where.id)[0]),
+      .mockImplementation(hashtag =>
+        Promise.resolve(testHashtags.filter(testHashtag => testHashtag.id === hashtag.where.id)[0]),
       ),
     findOneBy: jest
       .fn()
