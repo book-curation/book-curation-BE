@@ -24,16 +24,6 @@ describe('UsersService', () => {
         id: Date.now(),
         ...user,
         status: 'active',
-        hashtag: [
-          {
-            id: 1,
-            content: 'test-hashtag1',
-          },
-          {
-            id: 2,
-            content: 'test-hashtag2',
-          },
-        ],
       }),
     ),
     delete: jest.fn().mockImplementation(user =>
@@ -64,6 +54,24 @@ describe('UsersService', () => {
         name: 'user',
       }),
     ];
+
+    testUsers.push({
+      id: Date.now(),
+      userId: 'hashtag-user@gmail.com',
+      password: 'hashtagUser123#',
+      name: 'hashtag-user',
+      status: 'active',
+      hashtag: [
+        {
+          id: 1,
+          content: 'test-hashtag1',
+        },
+        {
+          id: 2,
+          content: 'test-hashtag2',
+        },
+      ],
+    });
   });
 
   afterEach(() => {
@@ -87,7 +95,6 @@ describe('UsersService', () => {
       password: expect.any(String),
       status: 'active',
       userId: 'test@gmail.com',
-      hashtag: expect.any(Array),
     });
   });
 
@@ -135,5 +142,23 @@ describe('UsersService', () => {
   it('should delete user information', async () => {
     const deleteResult = await service.delete('user@gmail.com', 'user123#');
     expect(deleteResult.affected).toEqual(1);
+  });
+
+  it('should delete Hashtag', async () => {
+    const hashtagId = 1;
+    const userId = 'hashtag-user@gmail.com';
+    expect(await service.deleteHashtag(hashtagId, userId)).toEqual({
+      id: expect.any(Number),
+      name: 'hashtag-user',
+      password: expect.any(String),
+      status: 'active',
+      userId: 'hashtag-user@gmail.com',
+      hashtag: [
+        {
+          id: 2,
+          content: 'test-hashtag2',
+        },
+      ],
+    });
   });
 });
