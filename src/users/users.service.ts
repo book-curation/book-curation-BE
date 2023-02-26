@@ -78,7 +78,7 @@ export class UsersService {
     return this.userRepository.delete(user.id);
   }
 
-  async deleteHashtag(hashtagId: number, userId: string) {
+  async deleteHashtag(hashtagId: number, userId: string): Promise<User> {
     const user = await this.findById(userId);
     user.hashtag = user.hashtag.filter(tag => {
       return tag.id != hashtagId;

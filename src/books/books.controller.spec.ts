@@ -27,6 +27,15 @@ describe('BooksController', () => {
       }
       return result;
     }),
+    getBookByHashtagId: jest.fn(hashtagId => {
+      return [
+        {
+          id: 1,
+          title: testBookInfo.title,
+          author: testBookInfo.author,
+        },
+      ];
+    }),
   };
 
   beforeEach(async () => {
@@ -58,5 +67,16 @@ describe('BooksController', () => {
       id,
       ...testBookInfo,
     });
+  });
+
+  it('should get book by hashtag id', () => {
+    const hashtagId = 1;
+    expect(controller.getBookByHashtagId(hashtagId)).toEqual([
+      {
+        id: expect.any(Number),
+        title: testBookInfo.title,
+        author: testBookInfo.author,
+      },
+    ]);
   });
 });

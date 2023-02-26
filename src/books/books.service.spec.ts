@@ -7,8 +7,14 @@ import { Book } from './entity/book.entity';
 
 describe('BooksService', () => {
   let service: BooksService;
-  let hashtagService: HashtagService;
   let testBooks = [];
+
+  const testHashtag = hashtagId => {
+    return {
+      id: hashtagId,
+      content: `test hashtag ${hashtagId}`,
+    };
+  };
 
   for (let i = 1; i < 11; i++) {
     testBooks.push({
@@ -18,9 +24,18 @@ describe('BooksService', () => {
       subject: `test number ${i}`,
       publisher: `test publisher ${i}`,
       author: `test author ${i}`,
+      hashtag: testHashtag(i),
     });
   }
 
+  const mockHashtagService = {
+    findById: jest.fn(hashtagId => {
+      return testHashtag(hashtagId);
+    }),
+    findBookByHashtag: jest.fn(hashtagId => {
+      return [testBooks[0]];
+    }),
+  };
   const mockBookRepository = {
     findOne: jest
       .fn()
@@ -31,6 +46,9 @@ describe('BooksService', () => {
       limit: jest.fn().mockReturnThis(),
       getMany: jest.fn().mockReturnThis(),
     }),
+    find: jest
+      .fn()
+      .mockImplementation(book => Promise.resolve(testBooks.filter(testBook => testBook.id === book.where.id))),
   };
 
   beforeEach(async () => {
@@ -39,9 +57,7 @@ describe('BooksService', () => {
         BooksService,
         {
           provide: HashtagService,
-          useFactory: () => {
-            forwardRef(() => HashtagService);
-          },
+          useValue: mockHashtagService,
         },
         {
           provide: getRepositoryToken(Book),
@@ -51,7 +67,6 @@ describe('BooksService', () => {
     }).compile();
 
     service = module.get<BooksService>(BooksService);
-    hashtagService = module.get<HashtagService>(HashtagService);
   });
 
   it('should be defined', () => {
@@ -78,5 +93,25 @@ describe('BooksService', () => {
     expect(mockBookRepository.createQueryBuilder().getMany).toHaveBeenCalled();
 
     expect(result.length).toEqual(count);
+  });
+
+  it('should get book list by hashtag id', async () => {
+    const hashtagId = 0;
+
+    const bookList = [
+      {
+        id: testBooks[0].id,
+        title: testBooks[0].title,
+        author: testBooks[0].author,
+      },
+    ];
+
+    expect(await service.getBookByHashtagId(hashtagId)).toEqual(bookList);
+  });
+
+  it('should find hashtag by book id', async () => {
+    const bookId = 1;
+
+    expect(await service.findHashtagByBook(bookId)).toEqual(testBooks[bookId - 1].hashtag);
   });
 });
