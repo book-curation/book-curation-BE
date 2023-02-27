@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BooksService } from 'src/books/books.service';
-import { UsersService } from 'src/users/users.service';
+import { BooksService } from '../books/books.service';
+import { UsersService } from '../users/users.service';
 import { DeleteResult, Repository } from 'typeorm';
 import { CreateCurationDto } from './dto/create-curation.dto';
 import { UpdateCurationDto } from './dto/update-curation.dto';
@@ -37,15 +37,13 @@ export class CurationsService {
   }
 
   async getCurationList(userId: string): Promise<Curation[]> {
-    const curationList = await this.curationRepository.find({
+    return this.curationRepository.find({
       where: {
         user: {
           userId,
         },
       },
     });
-
-    return curationList;
   }
 
   async findById(curationId: number): Promise<Curation> {
