@@ -7,13 +7,13 @@ export class UpdateCurationDto {
 
   @IsOptional()
   @IsString()
-  title: string;
+  title?: string;
 
   @IsOptional()
   @IsBoolean()
-  isPublic: boolean;
+  isPublic?: boolean;
 
   @IsOptional()
   @IsArray()
-  bookIdList: number[];
+  bookIdList?: number[];
 }
