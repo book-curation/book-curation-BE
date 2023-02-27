@@ -1,6 +1,6 @@
 import { Book } from '../../books/entity/book.entity';
 import { User } from '../../users/entity/user.entity';
-import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable, CreateDateColumn } from 'typeorm';
 
 @Entity()
 export class Curation {
@@ -13,7 +13,7 @@ export class Curation {
   @Column()
   isPublic: boolean;
 
-  @Column({ type: 'timestamptz' })
+  @CreateDateColumn()
   createAt: Date;
 
   @ManyToOne(() => User, user => user.curations)
