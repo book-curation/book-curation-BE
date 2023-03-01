@@ -19,8 +19,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: check current path and directory
+        run: pwd
+      - name: check current path and directory
+        run: cd ..
+      - name: check current path and directory
         run: ls
-
       - name: Create Docker Image
         run: docker build . -t ${{ env.IMAGE_NAME }}
 
