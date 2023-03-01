@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - eunk/54/hotfix
 
 env:
   RESOURCE_GROUP: book-curation-rg
@@ -17,6 +18,10 @@ jobs:
     name: Docker image build and push to Azure Container Registry
     runs-on: ubuntu-latest
     steps:
+      - name: check current path and directory
+        run: ls -d /*
+      - name: find dockerfile
+        run: find ./ -type f | grep "Dockerfile"
       - name: Create Docker Image
         run: docker build . -t ${{ env.IMAGE_NAME }}
 
