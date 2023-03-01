@@ -19,9 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: check current path and directory
-        run: ls -d */
-      - name: find dockerfile
-        run: find ./ -type f | grep "Dockerfile"
+        run: ls
+
       - name: Create Docker Image
         run: docker build . -t ${{ env.IMAGE_NAME }}
 
