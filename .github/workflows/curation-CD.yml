@@ -37,5 +37,13 @@ jobs:
           azcliversion: 2.42.0
           inlineScript: |
             az acr login --name ${{ env.ACR_NAME }}
-            docker push "${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}"
+      
+      - name: docker push
+        run: docker push "${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}"
+        
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.42.0
+          inlineScript: |
             az container restart --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CONTAINER_GROUP }}
