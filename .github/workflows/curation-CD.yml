@@ -18,14 +18,9 @@ jobs:
     name: Docker image build and push to Azure Container Registry
     runs-on: ubuntu-latest
     steps:
-      - name: check current path and directory
-        run: pwd
-      - name: check current path and directory
-        run: cd ..
-      - name: check current path and directory
-        run: ls
+      - uses: actions/checkout@v3
       - name: Create Docker Image
-        run: docker build /home/runner/work/book-curation-BE/Dockerfile -t ${{ env.IMAGE_NAME }}
+        run: docker build . -t ${{ env.IMAGE_NAME }}
 
       - name: Tag Docker Image
         run: docker tag project "${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}"
