@@ -13,6 +13,7 @@ env:
   ACR_NAME: 'crcuration'
   ACR_URL: 'crcuration.azurecr.io'
   TAG: 'latest'
+  
 jobs:
   docker-image-build:
     name: Docker image build and push to Azure Container Registry
@@ -23,7 +24,7 @@ jobs:
         run: docker build . -t ${{ env.IMAGE_NAME }}
 
       - name: Tag Docker Image
-        run: docker tag project "${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}"
+        run: docker tag ${{ env.IMAGE_NAME }} "${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}"
       
       - name: Log in with Azure
         uses: azure/login@v1
