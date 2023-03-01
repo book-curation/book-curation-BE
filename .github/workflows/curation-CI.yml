@@ -48,6 +48,11 @@ jobs:
         uses: DariuszPorowski/github-action-gitleaks@v2
         with:
           report_format: sarif
+          flags: --path="./"
+        env:
+          GITLEAKS_CONFIG: |
+            [regex]
+              Jest test files = \b(__tests__|\.spec)\b
 
       - name: Upload SARIF report to Workflow Artifacts
         uses: actions/upload-artifact@v3
