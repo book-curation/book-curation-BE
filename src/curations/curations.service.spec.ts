@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { Controller, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { BooksService } from '../books/books.service';
@@ -80,6 +80,19 @@ describe('CurationsService', () => {
       .mockImplementation(curation =>
         Promise.resolve(testCurationList.filter(testCuration => testCuration.id == curation.where.id)[0]),
       ),
+    delete: jest.fn().mockImplementation(curation =>
+      Promise.resolve({
+        raw: [],
+        affected: 1,
+      }),
+    ),
+    createQueryBuilder: jest.fn().mockReturnValue({
+      select: jest.fn().mockReturnThis(),
+      where: jest.fn().mockReturnThis(),
+      orderBy: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
+      getMany: jest.fn().mockReturnThis(),
+    }),
   };
 
   beforeEach(async () => {
@@ -140,5 +153,49 @@ describe('CurationsService', () => {
       title: 'updated curation title',
     };
     expect(await service.update(updateCurationDto)).toEqual(testCurationList[updateCurationDto.curationId - 1]);
+  });
+
+  it('should update curation when isPublic is changed', async () => {
+    const updateCurationDto: UpdateCurationDto = {
+      curationId: 1,
+      isPublic: false,
+    };
+    expect(await service.update(updateCurationDto)).toEqual(testCurationList[updateCurationDto.curationId - 1]);
+  });
+
+  it('should update curation when book list is changed', async () => {
+    const updateCurationDto: UpdateCurationDto = {
+      curationId: 1,
+      bookIdList: [2, 3],
+    };
+    expect(await service.update(updateCurationDto)).toEqual(testCurationList[updateCurationDto.curationId - 1]);
+  });
+
+  it('should delete curation when userId is match', async () => {
+    const curationId = 1;
+    const userId = 'user1@gmail.com';
+
+    const deleteResult = await service.delete(userId, curationId);
+    expect(deleteResult.affected).toEqual(1);
+  });
+
+  it('should not delete curation when userId is not match', async () => {
+    const curationId = 1;
+    const userId = 'user2@gmail.com';
+
+    await expect(service.delete(userId, curationId)).rejects.toThrow(ForbiddenException);
+  });
+
+  it('should return recommend curation list', async () => {
+    const count = 3;
+    const curationList = testCurationList.slice(0, count);
+
+    jest.spyOn(mockCurationRepository.createQueryBuilder(), 'getMany').mockResolvedValue(curationList);
+
+    const result = await service.recommendCuration();
+
+    expect(mockCurationRepository.createQueryBuilder().getMany).toHaveBeenCalled();
+
+    expect(result.length).toEqual(count);
   });
 });

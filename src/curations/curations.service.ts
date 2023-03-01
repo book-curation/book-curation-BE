@@ -65,7 +65,7 @@ export class CurationsService {
     if (updatePhraseDto.title) {
       curation.title = updatePhraseDto.title;
     }
-    if (updatePhraseDto.isPublic) {
+    if ('isPublic' in updatePhraseDto) {
       curation.isPublic = updatePhraseDto.isPublic;
     }
     if (updatePhraseDto.bookIdList) {
