@@ -1,0 +1,38 @@
+name: Book Curation Service CD
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  RESOURCE_GROUP: book-curation-rg
+  CONTAINER_GROUP: curation-aci
+  IMAGE_NAME: 'curation'
+  ACR_NAME: 'crcuration'
+  ACR_URL: 'crcuration.azurecr.io'
+  TAG: 'latest'
+jobs:
+  docker-image-build:
+    name: Docker image build and push to Azure Container Registry
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Docker Image
+        run: docker build -t ${{ env.IMAGE_NAME }}
+
+      - name: Tag Docker Image
+        run: docker tag project "${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}"
+      
+      - name: Log in with Azure
+        uses: azure/login@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.42.0
+          inlineScript: |
+            az acr login --name ${{ env.ACR_NAME }}
+            docker push "${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}"
+            az container restart --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CONTAINER_GROUP }}

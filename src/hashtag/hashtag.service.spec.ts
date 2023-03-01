@@ -29,7 +29,7 @@ describe('HashtagService', () => {
       password: 'test123',
       name: 'test',
       status: 'active',
-      registerAt: Date.now(),
+      registerAt: 1677667232300,
     };
   };
 
