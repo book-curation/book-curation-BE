@@ -33,7 +33,7 @@ jobs:
 
       - name: docker login and push
         run: |
-          docker login ${{ env.ACR_URL }} --username ${{ env.ACR_NAME }} --password-stdin ${{ secrets.ACR_CREDENTIALS }}
+          docker login -u ${{ env.ACR_NAME }} --password-stdin ${{ secrets.ACR_CREDENTIALS }} ${{ env.ACR_URL }}
           docker push ${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
           
       - name: Azure CLI script
