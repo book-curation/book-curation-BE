@@ -49,4 +49,5 @@ jobs:
         with:
           azcliversion: 2.42.0
           inlineScript: |
-            az container create --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CONTAINER_GROUP }} --image ${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} --cpu 1 --memory 1 --registry-login-server ${{ env.ACR_URL }} --registry-username ${{ env.ACR_NAME }} --registry-password ${{ secrets.ACR_CREDENTIALS }} --ip-address Public --dns-name-label book-container-test4 --ports 3000
+            az container restart --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CONTAINER_GROUP }}
+            
