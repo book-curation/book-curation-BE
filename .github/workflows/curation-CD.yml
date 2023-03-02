@@ -4,12 +4,11 @@ on:
   push:
     branches:
       - main
-      - oliveunji-patch-1
 
 env:
   RESOURCE_GROUP: book-curation-rg
   CONTAINER_GROUP: curation-aci
-  IMAGE_NAME: curation-test4
+  IMAGE_NAME: curation
   ACR_NAME: crcuration
   ACR_URL: 'crcuration.azurecr.io'
   TAG: latest
@@ -50,4 +49,3 @@ jobs:
           azcliversion: 2.42.0
           inlineScript: |
             az container restart --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CONTAINER_GROUP }}
-            
