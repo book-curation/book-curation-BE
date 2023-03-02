@@ -1,8 +1,10 @@
 FROM node:16 AS builder
+
+RUN mkdir app
 WORKDIR /app
-COPY package.json .
+COPY package.json /app
 RUN npm install
-COPY . .
+COPY . /app
 
 RUN npm run --script build
-CMD node dist/src/main.js
+CMD node dist/src/main
