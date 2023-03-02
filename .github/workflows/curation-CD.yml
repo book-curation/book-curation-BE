@@ -25,16 +25,24 @@ jobs:
 
       - name: Tag Docker Image
         run: docker tag ${{ env.IMAGE_NAME }} "${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}"
-      
+
+      - name: Log into registry
+        uses: docker/login-action@v1
+        with:
+          registry: ${{ env.ACR_URL }}
+          username: ${{ env.ACR_NAME }}
+          password: ${{ secrets.ACR_CREDENTIALS }}
+          
+      - name: Docker Push
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
+            
       - name: Log in with Azure
         uses: azure/login@v1
         with:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
-
-      - name: docker login and push
-        run: |
-          docker login -u ${{ env.ACR_NAME }} --password-stdin ${{ secrets.ACR_CREDENTIALS }} ${{ env.ACR_URL }}
-          docker push ${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
           
       - name: Azure CLI script
         uses: azure/CLI@v1
