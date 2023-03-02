@@ -9,10 +9,10 @@ on:
 env:
   RESOURCE_GROUP: book-curation-rg
   CONTAINER_GROUP: curation-aci
-  IMAGE_NAME: 'curation'
-  ACR_NAME: 'crcuration'
+  IMAGE_NAME: curation-test4
+  ACR_NAME: crcuration
   ACR_URL: 'crcuration.azurecr.io'
-  TAG: 'latest'
+  TAG: latest
   
 jobs:
   docker-image-build:
@@ -24,7 +24,7 @@ jobs:
         run: docker build . -t ${{ env.IMAGE_NAME }}
 
       - name: Tag Docker Image
-        run: docker tag ${{ env.IMAGE_NAME }} "${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}"
+        run: docker tag ${{ env.IMAGE_NAME }} ${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }}
 
       - name: Log into registry
         uses: docker/login-action@v1
@@ -49,4 +49,4 @@ jobs:
         with:
           azcliversion: 2.42.0
           inlineScript: |
-            az container restart --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CONTAINER_GROUP }}
+            az container create --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.CONTAINER_GROUP }} --image ${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ env.TAG }} --cpu 1 --memory 1 --registry-login-server ${{ env.ACR_URL }} --registry-username ${{ env.ACR_NAME }} --registry-password ${{ secrets.ACR_CREDENTIALS }} --ip-address Public --dns-name-label book-container-test4 --ports 3000
