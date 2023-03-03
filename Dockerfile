@@ -25,7 +25,7 @@ RUN npm install
 COPY . .
 
 # Build the application
-RUN npm run build
+RUN DB_HOST=${DB_HOST} DB_USER=${DB_USER} DB_PASSWORD=${DB_PASSWORD} npm run build
 
 # Expose the port that the application will run on
 EXPOSE 3000
