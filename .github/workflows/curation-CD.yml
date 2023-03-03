@@ -26,8 +26,8 @@ jobs:
         uses: azure/docker-login@v1
         with:
           login-server: ${{ env.ACR_URL }}
-          username: ${{ env.ACR_NAME }}
-          password: ${{ secrets.ACR_CREDENTIALS }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
       - run: |
           docker build . -t ${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           docker push ${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
@@ -39,8 +39,8 @@ jobs:
           dns-name-label: ${{ env.RESOURCE_GROUP }}${{ github.run_number }}
           image: ${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
           registry-login-server: ${{ env.ACR_URL }}
-          registry-username: ${{ env.ACR_NAME }}
-          registry-password: ${{ secrets.ACR_CREDENTIALS }}
+          registry-username: ${{ secrets.REGISTRY_USERNAME }}
+          registry-password: ${{ secrets.REGISTRY_PASSWORD }}
           name: ${{ env.CONTAINER_GROUP }}
           location: 'east us'
  
