@@ -12,7 +12,6 @@ env:
   IMAGE_NAME: curation
   ACR_NAME: crcuration
   ACR_URL: 'crcuration.azurecr.io'
-  TAG: latest
   
 jobs:
   docker-image-build:
@@ -37,7 +36,6 @@ jobs:
             DB_HOST=${{ secrets.DB_HOST }}
             DB_USER=${{ secrets.DB_USER }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}
-            DB_TEST=1234
       - name: 'Build and push image'
         uses: azure/docker-login@v1
         with:
@@ -47,6 +45,10 @@ jobs:
       - run: |
           docker push ${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
+  deploy-to-Azure-Container-Instances:
+    name: Docker image build and push to Azure Container Registry
+    runs-on: ubuntu-latest
+    steps:
       - name: 'Deploy to Azure Container Instances'
         uses: 'azure/aci-deploy@v1'
         with:
@@ -61,4 +63,5 @@ jobs:
           cpu: 1
           memory: 1
           ports: 3000
- 
+
+
