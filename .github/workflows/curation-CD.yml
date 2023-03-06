@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - oliveunji-patch-2
 
 env:
   RESOURCE_GROUP: book-curation-rg
