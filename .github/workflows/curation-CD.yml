@@ -37,7 +37,7 @@ jobs:
             DB_HOST: ${{ secrets.DB_HOST }}
             DB_USER: ${{ secrets.DB_USER }}
             DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-            
+            DB_TEST: 1234
       - name: 'Build and push image'
         uses: azure/docker-login@v1
         with:
