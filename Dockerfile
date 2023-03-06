@@ -1,10 +1,24 @@
-FROM node:16 AS builder
+FROM node:16
 
-RUN mkdir app
 WORKDIR /app
-COPY package.json /app
-RUN npm install
-COPY . /app
 
-RUN npm run --script build
-CMD node dist/src/main
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+ARG DB_HOST
+ARG DB_USER
+ARG DB_PASSWORD
+ARG DB_TEST
+
+ENV DB_HOST=$DB_HOST
+ENV DB_USER=$DB_USER
+ENV DB_PASSWORD=$DB_PASSWORD
+
+RUN npm run build
+
+EXPOSE 3000
+
+CMD ["npm", "run", "start:prod"]
