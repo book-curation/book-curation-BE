@@ -24,11 +24,15 @@ RUN npm install
 # Copy the rest of the application code to the container
 COPY . .
 
-ENV DB_HOST=${DB_HOST} \
-    DB_USER=${DB_USER} \
-    DB_PASSWORD=${DB_PASSWORD}
+ARG DB_HOST
+ARG DB_USER
+ARG DB_PASSWORD
 
-RUN echo "DB_HOST is set to ${DB_HOST}"
+ENV DB_HOST=$DB_HOST \
+    DB_USER=$DB_USER \
+    DB_PASSWORD=$DB_PASSWORD
+
+RUN echo "DB_HOST is set to $DB_HOST"
 # Build the application
 # RUN DB_HOST=${DB_HOST} DB_USER=${DB_USER} DB_PASSWORD=${DB_PASSWORD} npm run build
 RUN npm run build
