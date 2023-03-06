@@ -14,7 +14,7 @@ env:
   ACR_URL: 'crcuration.azurecr.io'
   
 jobs:
-  docker-image-build:
+  docker-image-build-and-push:
     name: Docker image build and push to Azure Container Registry
     runs-on: ubuntu-latest
     steps:
@@ -46,10 +46,16 @@ jobs:
           docker push ${{ env.ACR_URL }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
 
   deploy-to-Azure-Container-Instances:
-    name: Docker image build and push to Azure Container Registry
+    needs: docker-image-build-and-push
+    name: Deploy to Azure Container Instances
     runs-on: ubuntu-latest
     steps:
-      - name: 'Deploy to Azure Container Instances'
+      - name: Login via Azure CLI
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Deploy to Azure Container Instances
         uses: 'azure/aci-deploy@v1'
         with:
           resource-group: ${{ env.RESOURCE_GROUP }}
