@@ -24,9 +24,14 @@ RUN npm install
 # Copy the rest of the application code to the container
 COPY . .
 
+ENV DB_HOST=${DB_HOST} \
+    DB_USER=${DB_USER} \
+    DB_PASSWORD=${DB_PASSWORD}
+
+RUN echo "DB_HOST is set to ${DB_HOST}"
 # Build the application
 # RUN DB_HOST=${DB_HOST} DB_USER=${DB_USER} DB_PASSWORD=${DB_PASSWORD} npm run build
-RUN npm run build -- --env=${DB_HOST},${DB_USER},${DB_PASSWORD}
+RUN npm run build
 
 # Expose the port that the application will run on
 EXPOSE 3000
